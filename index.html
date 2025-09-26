@@ -59,31 +59,25 @@
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoibWljaGFpbHVrc2l0ZTEiLCJhIjoiY21nMHR6c3JuMGhzNzJrczlheXRkdnRlbSJ9.fCpm3yrZdD52g3O72a-ylQ';
 
-    const worldCities = [
-        { name: 'Tokyo', coords: [139.6917, 35.6895] }, { name: 'Jakarta', coords: [106.8650, -6.1751] },
-        { name: 'Delhi', coords: [77.1025, 28.7041] }, { name: 'Manila', coords: [120.9842, 14.5995] },
-        { name: 'São Paulo', coords: [-46.6333, -23.5505] }, { name: 'Seoul', coords: [126.9780, 37.5665] },
-        { name: 'Mumbai', coords: [72.8777, 19.0760] }, { name: 'Shanghai', coords: [121.4737, 31.2304] },
-        { name: 'Mexico City', coords: [-99.1332, 19.4326] }, { name: 'Guangzhou', coords: [113.2644, 23.1291] },
-        { name: 'Cairo', coords: [31.2357, 30.0444] }, { name: 'Beijing', coords: [116.4074, 39.9042] },
-        { name: 'New York', coords: [-74.0060, 40.7128] }, { name: 'Kolkata', coords: [88.3639, 22.5726] },
-        { name: 'Buenos Aires', coords: [-58.3816, -34.6037] }, { name: 'Istanbul', coords: [28.9784, 41.0082] },
-        { name: 'Lagos', coords: [3.3792, 6.5244] }, { name: 'Rio de Janeiro', coords: [-43.1729, -22.9068] },
-        { name: 'Los Angeles', coords: [-118.2437, 34.0522] }, { name: 'Paris', coords: [2.3522, 48.8566] },
-        { name: 'London', coords: [-0.1278, 51.5074] }, { name: 'Lima', coords: [-77.0428, -12.0464] },
-        { name: 'Bogotá', coords: [-74.0721, 4.7110] }, { name: 'Ho Chi Minh City', coords: [106.6297, 10.8231] },
-        { name: 'Bangkok', coords: [100.5018, 13.7563] }, { name: 'Tehran', coords: [51.3890, 35.6892] },
-        { name: 'Santiago', coords: [-70.6693, -33.4489] }, { name: 'Madrid', coords: [-3.7038, 40.4168] },
-        { name: 'Toronto', coords: [-79.3832, 43.6532] }, { name: 'Sydney', coords: [151.2093, -33.8688] },
-        { name: 'Berlin', coords: [13.4050, 52.5200] }, { name: 'Rome', coords: [12.4964, 41.9028] },
-        { name: 'Cape Town', coords: [18.4241, -33.9249] }, { name: 'Warsaw', coords: [21.0122, 52.2297] },
-        { name: 'Dubai', coords: [55.2708, 25.2048] }, { name: 'Singapore', coords: [103.8198, 1.3521] },
-        { name: 'Chicago', coords: [-87.6298, 41.8781] }, { name: 'Houston', coords: [-95.3698, 29.7604] },
-        { name: 'Phoenix', coords: [-112.0740, 33.4484] }, { name: 'Philadelphia', coords: [-75.1652, 39.9526] },
-        { name: 'San Antonio', coords: [-98.4936, 29.4241] }, { name: 'San Diego', coords: [-117.1611, 32.7157] },
-        { name: 'Dallas', coords: [-96.7970, 32.7767] }, { name: 'San Jose', coords: [-121.8863, 37.3382] },
-        { name: 'Riyadh', coords: [46.6753, 24.7136] }, { name: 'Kyiv', coords: [30.5234, 50.4501] },
-        { name: 'Melbourne', coords: [144.9631, -37.8136] }, { name: 'Alexandria', coords: [29.9187, 31.2001] }
+    const europeanCities = [
+        { name: 'Paris', coords: [2.3522, 48.8566] }, { name: 'London', coords: [-0.1278, 51.5074] },
+        { name: 'Madrid', coords: [-3.7038, 40.4168] }, { name: 'Berlin', coords: [13.4050, 52.5200] },
+        { name: 'Rome', coords: [12.4964, 41.9028] }, { name: 'Kyiv', coords: [30.5234, 50.4501] },
+        { name: 'Warsaw', coords: [21.0122, 52.2297] }, { name: 'Bucharest', coords: [26.1025, 44.4268] },
+        { name: 'Vienna', coords: [16.3738, 48.2082] }, { name: 'Budapest', coords: [19.0402, 47.4979] },
+        { name: 'Prague', coords: [14.4378, 50.0755] }, { name: 'Sofia', coords: [23.3219, 42.6977] },
+        { name: 'Brussels', coords: [4.3517, 50.8503] }, { name: 'Amsterdam', coords: [4.8952, 52.3702] },
+        { name: 'Stockholm', coords: [18.0686, 59.3293] }, { name: 'Oslo', coords: [10.7522, 59.9139] },
+        { name: 'Copenhagen', coords: [12.5683, 55.6761] }, { name: 'Helsinki', coords: [24.9384, 60.1699] },
+        { name: 'Dublin', coords: [-6.2603, 53.3498] }, { name: 'Lisbon', coords: [-9.1393, 38.7223] },
+        { name: 'Athens', coords: [23.7275, 37.9838] }, { name: 'Bratislava', coords: [17.1077, 48.1486] },
+        { name: 'Ljubljana', coords: [14.5058, 46.0569] }, { name: 'Zagreb', coords: [15.9819, 45.8150] },
+        { name: 'Tirana', coords: [19.8187, 41.3275] }, { name: 'Sarajevo', coords: [18.4131, 43.8563] },
+        { name: 'Skopje', coords: [21.4254, 41.9981] }, { name: 'Podgorica', coords: [19.2594, 42.4304] },
+        { name: 'Valletta', coords: [14.5146, 35.8989] }, { name: 'Luxembourg', coords: [6.1296, 49.6116] },
+        { name: 'Monaco', coords: [7.4246, 43.7384] }, { name: 'Andorra la Vella', coords: [1.5218, 42.5063] },
+        { name: 'Vaduz', coords: [9.5209, 47.1410] }, { name: 'Bern', coords: [7.4474, 46.9480] },
+        { name: 'Istanbul', coords: [28.9784, 41.0082] }
     ];
 
     const destinationClinics = {
@@ -97,15 +91,16 @@
         }
     };
     
-    const MAX_CONCURRENT_ANIMATIONS = 7;
+    // --- ИЗМЕНЕНИЕ: Увеличено количество маршрутов ---
+    const MAX_CONCURRENT_ANIMATIONS = 11;
     let activeAnimations = [];
-
+    
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/dark-v11',
         projection: 'globe',
-        center: [27, 49],
-        zoom: 1.5,
+        center: [15, 49],
+        zoom: 3.5,
         antialias: true
     });
 
@@ -120,8 +115,21 @@
             'star-intensity': 0.2
         });
 
-        const clinicPoints = Object.entries(destinationClinics).map(([name, data]) => turf.point(data.coords, { name, isDestination: true }));
+        // --- ИЗМЕНЕНИЕ: Скрываем названия российских и белорусских городов ---
+        const layers = map.getStyle().layers;
+        for (const layer of layers) {
+            if (layer.type === 'symbol' && layer.layout['text-field']) {
+                if (layer['source-layer'] && (layer['source-layer'].includes('place') || layer['source-layer'].includes('settlement'))) {
+                     map.setFilter(layer.id, ['all', 
+                        ['!=', ['get', 'iso_3166_1_alpha_2'], 'RU'],
+                        ['!=', ['get', 'iso_3166_1_alpha_2'], 'BY']
+                     ]);
+                }
+            }
+        }
 
+        const clinicPoints = Object.entries(destinationClinics).map(([name, data]) => turf.point(data.coords, { name, isDestination: true }));
+        
         map.addSource('clinic-points', { 'type': 'geojson', 'data': turf.featureCollection(clinicPoints) });
         map.addSource('start-points', { 'type': 'geojson', 'data': turf.featureCollection([]) });
         map.addSource('routes', { 'type': 'geojson', 'data': turf.featureCollection([]) });
@@ -134,25 +142,62 @@
         
         map.addLayer({
             'id': 'start-points-layer', 'type': 'circle', 'source': 'start-points',
-            'paint': { 'circle-radius': 4, 'circle-color': '#007cbf', 'circle-stroke-width': 1, 'circle-stroke-color': '#ffffff' }
+            'paint': {
+                'circle-radius': 4, 'circle-color': '#007cbf',
+                'circle-stroke-width': 1, 'circle-stroke-color': '#ffffff',
+                'circle-opacity': ['get', 'opacity']
+            }
         });
 
-        map.addLayer({ 'id': 'routes-layer', 'type': 'line', 'source': 'routes', 'paint': { 'line-color': '#007cbf', 'line-width': 1.5, 'line-opacity': 0.6 }});
-        map.addLayer({ 'id': 'animation-layer', 'type': 'circle', 'source': 'animation-points', 'paint': { 'circle-radius': 5, 'circle-color': '#007cbf', 'circle-stroke-width': 1, 'circle-stroke-color': '#ffffff' }});
+        map.addLayer({
+            'id': 'routes-layer', 'type': 'line', 'source': 'routes',
+            'paint': {
+                'line-color': '#007cbf', 'line-width': 1.5,
+                'line-opacity': ['get', 'opacity'],
+                'line-dasharray': [2, 2]
+            }
+        });
+        
+        map.addLayer({
+            'id': 'animation-layer', 'type': 'circle', 'source': 'animation-points',
+            'paint': {
+                'circle-radius': 5, 'circle-color': 'white',
+                'circle-opacity': ['get', 'opacity']
+            }
+        });
 
         function createNewAnimation() {
-            const startCity = worldCities[Math.floor(Math.random() * worldCities.length)];
+            const startCity = europeanCities[Math.floor(Math.random() * europeanCities.length)];
             const endClinic = Object.values(destinationClinics)[Math.floor(Math.random() * 2)];
-            const route = turf.greatCircle(startCity.coords, endClinic.coords, { npoints: 200 });
             
-            // --- ИЗМЕНЕНИЕ: Каждая анимация получает свою случайную скорость ---
-            const speed = 0.0015 + Math.random() * 0.001;
+            // --- ИЗМЕНЕНИЕ: Улучшенная логика облета ---
+            let route;
+            const needsNorthernDetour = ['Stockholm', 'Oslo', 'Copenhagen', 'Helsinki'].includes(startCity.name);
+            const needsSouthernDetour = ['Istanbul', 'Athens'].includes(startCity.name);
+            
+            if (needsNorthernDetour) {
+                // Промежуточная точка - Варшава
+                const waypoint = turf.point([21.0122, 52.2297]); 
+                const part1 = turf.greatCircle(startCity.coords, waypoint.geometry.coordinates, { npoints: 100 });
+                const part2 = turf.greatCircle(waypoint.geometry.coordinates, endClinic.coords, { npoints: 100 });
+                route = turf.lineString([...part1.geometry.coordinates, ...part2.geometry.coordinates]);
+            } else if (needsSouthernDetour) {
+                // Промежуточная точка - Бухарест
+                const waypoint = turf.point([26.1025, 44.4268]); 
+                const part1 = turf.greatCircle(startCity.coords, waypoint.geometry.coordinates, { npoints: 100 });
+                const part2 = turf.greatCircle(waypoint.geometry.coordinates, endClinic.coords, { npoints: 100 });
+                route = turf.lineString([...part1.geometry.coordinates, ...part2.geometry.coordinates]);
+            } else {
+                route = turf.greatCircle(startCity.coords, endClinic.coords, { npoints: 200 });
+            }
+
+            const speed = 0.0008 + Math.random() * 0.0005;
 
             return {
                 route: route,
-                startPoint: turf.point(startCity.coords, { name: startCity.name, isDestination: false }),
+                startPoint: turf.point(startCity.coords, { name: startCity.name }),
                 progress: 0,
-                speed: speed // Сохраняем скорость
+                speed: speed
             };
         }
 
@@ -164,8 +209,7 @@
             const feature = e.features[0];
             const cityName = feature.properties.name;
             const cityData = destinationClinics[cityName];
-            
-            if (feature.properties.isDestination && cityData && cityData.url) {
+            if (cityData && cityData.url) {
                 const popupContent = `<strong>${cityName}</strong><a href="${cityData.url}" target="_blank" class="popup-button">Смотреть на Google Maps</a>`;
                 new mapboxgl.Popup().setLngLat(feature.geometry.coordinates).setHTML(popupContent).addTo(map);
             }
@@ -174,30 +218,43 @@
         map.on('mouseleave', 'clinic-points-layer', () => { map.getCanvas().style.cursor = ''; });
 
         function animate() {
-            // --- ИЗМЕНЕНИЕ: Независимая логика для каждой линии ---
             for (let i = 0; i < activeAnimations.length; i++) {
                 const anim = activeAnimations[i];
-                // Используем индивидуальную скорость
-                anim.progress += anim.speed; 
-                
-                // Если анимация завершилась, заменяем ее на новую
+                anim.progress += anim.speed;
                 if (anim.progress >= 1) {
                     activeAnimations[i] = createNewAnimation();
                 }
             }
 
-            // Обновляем источники данных для Mapbox
-            const currentRoutes = activeAnimations.map(anim => anim.route);
-            const currentStartPoints = activeAnimations.map(anim => anim.startPoint);
-            const currentComets = activeAnimations.map(anim => {
-                const routeDistance = turf.length(anim.route);
+            const currentRoutes = [];
+            const currentStartPoints = [];
+            const currentAnimationPoints = [];
+
+            activeAnimations.forEach(anim => {
                 const progress = Math.min(anim.progress, 1);
-                return turf.along(anim.route, routeDistance * progress);
+                
+                const FADE_TIME = 0.15;
+                let opacity = 0.7;
+                if (progress < FADE_TIME) {
+                    opacity = (progress / FADE_TIME) * 0.7;
+                } else if (progress > 1 - FADE_TIME) {
+                    opacity = ((1 - progress) / FADE_TIME) * 0.7;
+                }
+
+                anim.route.properties = { opacity };
+                anim.startPoint.properties.opacity = opacity;
+                currentRoutes.push(anim.route);
+                currentStartPoints.push(anim.startPoint);
+
+                const routeDistance = turf.length(anim.route);
+                const currentPoint = turf.along(anim.route, routeDistance * progress);
+                currentPoint.properties = { opacity };
+                currentAnimationPoints.push(currentPoint);
             });
 
             map.getSource('routes').setData(turf.featureCollection(currentRoutes));
             map.getSource('start-points').setData(turf.featureCollection(currentStartPoints));
-            map.getSource('animation-points').setData(turf.featureCollection(currentComets));
+            map.getSource('animation-points').setData(turf.featureCollection(currentAnimationPoints));
             
             requestAnimationFrame(animate);
         }
@@ -206,4 +263,6 @@
 </script>
 </body>
 </html>
+
+
 
