@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивная 3D Карта на Mapbox</title>
+    <!-- Используем актуальную версию библиотеки Mapbox -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <!-- Подключение Turf.js для расчетов на карте -->
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        /* Стиль для всплывающих окон */
+        .mapboxgl-popup-content {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 10px 15px !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 14px;
+            color: #333;
+        }
+        .mapboxgl-popup-close-button {
+            color: #555;
+        }
+        /* Стили для кнопки в плашке */
+        .popup-button {
+            display: block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #007cbf;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+        .popup-button:hover {
+            background-color: #c8d7de;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWljaGFpbHVrc2l0ZTEiLCJhIjoiY21nMHR6c3JuMGhzNzJrczlheXRkdnRlbSJ9.fCpm3yrZdD52g3O72a-ylQ';
+
+    const cities = {
+        'Клиника на Молодіжній': {
+            coords: [26.952723, 49.411302], isDestination: true,
+            url: 'https://maps.app.goo.gl/LJCYSx8TRKTHiWXF9'
+        },
+        'Клиника на Шевченка': {
+            coords: [27.016370, 49.416488], isDestination: true,
+            url: 'https://maps.app.goo.gl/PtNq685XyPddr8yS6'
+        },
+        'Лондон': { coords: [-0.1276, 51.5072] }, 'Нью Йорк': { coords: [-74.0060, 40.7128] },
+        'Рио': { coords: [-43.1729, -22.9068] }, 'Сидней': { coords: [151.2093, -33.8688] },
+        'Берлин': { coords: [13.4050, 52.5200] }, 'Париж': { coords: [2.3522, 48.8566] },
+        'Варшава': { coords: [21.0122, 52.2297] }, 'Дубай': { coords: [55.2708, 25.2048] },
+        'Токио': { coords: [139.6917, 35.6895] }, 'Торонто': { coords: [-79.3832, 43.6532] }
+    };
+
+    const destinationClinics = Object.values(cities).filter(c => c.isDestination);
+
+    // Инициализация карты
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11', // Надежный базовый стиль
+        projection: 'globe',
+        center: [27, 49],
+        zoom: 1.5,
+        antialias: true
+    });
+
+    map.on('error', (e) => {
+        console.error('ОШИБКА MAPBOX:', e.error);
+    });
+
+    map.on('load', () => {
+        console.log('Карта успешно загружена!');
+        map.setFog({}); // Добавляем стандартную атмосферу
+
+        const routes = [];
+        const points = [];
+        Object.keys(cities).forEach(name => {
+            const city = cities[name];
+            points.push(turf.point(city.coords, { name: name, isDestination: !!city.isDestination }));
+            if (!city.isDestination) {
+                destinationClinics.forEach(clinic => {
+                    routes.push(turf.greatCircle(city.coords, clinic.coords, { npoints: 200 }));
+                });
+            }
+        });
+
+        const animationSource = { type: 'FeatureCollection', features: [] };
+        map.addSource('routes', { 'type': 'geojson', 'data': { 'type': 'FeatureCollection', 'features': routes } });
+        map.addSource('points', { 'type': 'geojson', 'data': { 'type': 'FeatureCollection', 'features': points } });
+        map.addSource('animation-points', { 'type': 'geojson', 'data': animationSource });
+
+        map.addLayer({
+            'id': 'routes-layer', 'type': 'line', 'source': 'routes',
+            'layout': { 'line-join': 'round', 'line-cap': 'round' },
+            'paint': { 'line-color': '#007cbf', 'line-width': 1.5, 'line-opacity': 0.6 }
+        });
+        map.addLayer({
+            'id': 'points-layer', 'type': 'circle', 'source': 'points',
+            'paint': {
+                'circle-radius': 5,
+                'circle-color': ['case', ['get', 'isDestination'], '#ff4136', '#007cbf'],
+                'circle-stroke-width': 1, 'circle-stroke-color': '#ffffff'
+            }
+        });
+        map.addLayer({
+            'id': 'animation-layer', 'type': 'circle', 'source': 'animation-points',
+            'paint': {
+                'circle-radius': 5, 'circle-color': '#007cbf',
+                'circle-stroke-width': 1, 'circle-stroke-color': '#ffffff'
+            }
+        });
+
+        // --- ИСПРАВЛЕНИЕ: Добавление кнопки со ссылкой в плашку ---
+        map.on('click', 'points-layer', (e) => {
+            const feature = e.features[0];
+            const cityName = feature.properties.name;
+            const cityData = cities[cityName]; // Находим данные города по имени
+
+            // Проверяем, что это точка назначения и у нее есть ссылка
+            if (feature.properties.isDestination && cityData && cityData.url) {
+                const popupContent = `
+                    <strong>${cityName}</strong>
+                    <a href="${cityData.url}" target="_blank" class="popup-button">Смотреть на Google Maps</a>
+                `;
+
+                new mapboxgl.Popup()
+                    .setLngLat(feature.geometry.coordinates)
+                    .setHTML(popupContent)
+                    .addTo(map);
+            }
+        });
+
+        // Изменение курсора при наведении на кликабельные точки
+        map.on('mouseenter', 'points-layer', (e) => {
+            if (e.features[0].properties.isDestination) {
+                map.getCanvas().style.cursor = 'pointer';
+            }
+        });
+        map.on('mouseleave', 'points-layer', () => {
+            map.getCanvas().style.cursor = '';
+        });
+
+
+        let step = 0;
+        function animate() {
+            const animationPointsFeatures = [];
+            routes.forEach((route, index) => {
+                const totalSteps = route.geometry.coordinates.length - 1;
+                const currentStep = Math.floor((step + index * 20) % totalSteps);
+                animationPointsFeatures.push(turf.point(route.geometry.coordinates[currentStep]));
+            });
+            animationSource.features = animationPointsFeatures;
+            map.getSource('animation-points').setData(animationSource);
+            step = (step + 0.5);
+            requestAnimationFrame(animate);
+        }
+        animate();
+    });
+</script>
+</body>
+</html>
+
