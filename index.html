@@ -91,7 +91,6 @@
         }
     };
     
-    // --- ИЗМЕНЕНИЕ: Увеличено количество маршрутов ---
     const MAX_CONCURRENT_ANIMATIONS = 11;
     let activeAnimations = [];
     
@@ -115,7 +114,6 @@
             'star-intensity': 0.2
         });
 
-        // --- ИЗМЕНЕНИЕ: Скрываем названия российских и белорусских городов ---
         const layers = map.getStyle().layers;
         for (const layer of layers) {
             if (layer.type === 'symbol' && layer.layout['text-field']) {
@@ -170,19 +168,16 @@
             const startCity = europeanCities[Math.floor(Math.random() * europeanCities.length)];
             const endClinic = Object.values(destinationClinics)[Math.floor(Math.random() * 2)];
             
-            // --- ИЗМЕНЕНИЕ: Улучшенная логика облета ---
             let route;
             const needsNorthernDetour = ['Stockholm', 'Oslo', 'Copenhagen', 'Helsinki'].includes(startCity.name);
             const needsSouthernDetour = ['Istanbul', 'Athens'].includes(startCity.name);
             
             if (needsNorthernDetour) {
-                // Промежуточная точка - Варшава
                 const waypoint = turf.point([21.0122, 52.2297]); 
                 const part1 = turf.greatCircle(startCity.coords, waypoint.geometry.coordinates, { npoints: 100 });
                 const part2 = turf.greatCircle(waypoint.geometry.coordinates, endClinic.coords, { npoints: 100 });
                 route = turf.lineString([...part1.geometry.coordinates, ...part2.geometry.coordinates]);
             } else if (needsSouthernDetour) {
-                // Промежуточная точка - Бухарест
                 const waypoint = turf.point([26.1025, 44.4268]); 
                 const part1 = turf.greatCircle(startCity.coords, waypoint.geometry.coordinates, { npoints: 100 });
                 const part2 = turf.greatCircle(waypoint.geometry.coordinates, endClinic.coords, { npoints: 100 });
@@ -233,12 +228,14 @@
             activeAnimations.forEach(anim => {
                 const progress = Math.min(anim.progress, 1);
                 
-                const FADE_TIME = 0.15;
-                let opacity = 0.7;
-                if (progress < FADE_TIME) {
-                    opacity = (progress / FADE_TIME) * 0.7;
-                } else if (progress > 1 - FADE_TIME) {
-                    opacity = ((1 - progress) / FADE_TIME) * 0.7;
+                // --- ИЗМЕНЕНИЕ: Исправлена логика исчезновения ---
+                const FADE_IN_TIME = 0.10;  // 10% на появление
+                const FADE_OUT_TIME = 0.02; // 2% на исчезновение
+                let opacity = 0.7; 
+                if (progress < FADE_IN_TIME) {
+                    opacity = (progress / FADE_IN_TIME) * 0.7;
+                } else if (progress > 1 - FADE_OUT_TIME) {
+                    opacity = ((1 - progress) / FADE_OUT_TIME) * 0.7;
                 }
 
                 anim.route.properties = { opacity };
@@ -263,6 +260,4 @@
 </script>
 </body>
 </html>
-
-
 
